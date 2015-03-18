@@ -41,8 +41,9 @@ inline size_t DbgTrace_Port::write(const uint8_t *buffer, size_t size)
 {
   size_t n = 0;
   n += Serial.print(millis());
-  n += Serial.print(F(" "));
+  n += Serial.print(F(" - "));
   n += Serial.print(getTag());
+  n += Serial.print(F(": "));
   while (size--)
   {
     n += Serial.write(*buffer++);
