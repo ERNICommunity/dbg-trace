@@ -11,24 +11,23 @@
 #include "DbgTracePort.h"
 
 DbgTrace_Port::DbgTrace_Port(const char* tag)
-: m_level(DbgTraceLevel::notice)
+: m_nextPort(0)
+, m_level(DbgTrace_Level::notice)
 , m_tag(tag)
 { }
 
 DbgTrace_Port::DbgTrace_Port(const __FlashStringHelper* tag)
-: m_level(DbgTraceLevel::notice)
+: m_nextPort(0)
+, m_level(DbgTrace_Level::notice)
 , m_tag(reinterpret_cast<const char*>(tag))
 { }
 
-DbgTrace_Port::~DbgTrace_Port()
-{ }
-
-void DbgTrace_Port::setLevel(DbgTraceLevel::Level level)
+void DbgTrace_Port::setLevel(DbgTrace_Level::Level level)
 {
   m_level = level;
 }
 
-DbgTraceLevel::Level DbgTrace_Port::getLevel()
+DbgTrace_Level::Level DbgTrace_Port::getLevel()
 {
   return m_level;
 }

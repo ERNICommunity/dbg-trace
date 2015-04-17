@@ -8,7 +8,7 @@
 #ifndef PLAT_DEBUG_TRACE_DBGTRACELEVEL_H_
 #define PLAT_DEBUG_TRACE_DBGTRACELEVEL_H_
 
-class DbgTraceLevel
+class DbgTrace_Level
 {
 public:
 
@@ -25,13 +25,13 @@ public:
     debug     =  7
   } Level;
 
-  virtual ~DbgTraceLevel() { }
+  virtual ~DbgTrace_Level() { }
 
 private:
-  DbgTraceLevel() { }
+  DbgTrace_Level() { }
 
-  DbgTraceLevel& operator = (const DbgTraceLevel& src); // assignment operator
-  DbgTraceLevel(const DbgTraceLevel& src);              // copy constructor
+  DbgTrace_Level& operator = (const DbgTrace_Level& src); // assignment operator
+  DbgTrace_Level(const DbgTrace_Level& src);              // copy constructor
 };
 
 
