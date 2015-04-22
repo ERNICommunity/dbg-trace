@@ -11,6 +11,7 @@
 class DbgTrace_Level
 {
 public:
+  virtual ~DbgTrace_Level() { }
 
   typedef enum
   {
@@ -25,13 +26,10 @@ public:
     debug     =  7
   } Level;
 
-  virtual ~DbgTrace_Level() { }
-
 private:
-  DbgTrace_Level() { }
-
   DbgTrace_Level& operator = (const DbgTrace_Level& src); // assignment operator
   DbgTrace_Level(const DbgTrace_Level& src);              // copy constructor
+  DbgTrace_Level();
 };
 
 

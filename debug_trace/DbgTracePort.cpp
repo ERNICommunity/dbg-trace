@@ -5,37 +5,24 @@
  *      Author: niklausd
  */
 
-#include <string.h>
-#include <Arduino.h>
 #include "DbgTraceLevel.h"
 #include "DbgTracePort.h"
+#include <string.h>
+#include <Arduino.h>
 
 DbgTrace_Port::DbgTrace_Port(const char* tag)
-: m_nextPort(0)
+: m_out(0)
 , m_level(DbgTrace_Level::notice)
+, m_nextPort(0)
 , m_tag(tag)
 { }
 
 DbgTrace_Port::DbgTrace_Port(const __FlashStringHelper* tag)
-: m_nextPort(0)
+: m_out(0)
 , m_level(DbgTrace_Level::notice)
+, m_nextPort(0)
 , m_tag(reinterpret_cast<const char*>(tag))
 { }
-
-void DbgTrace_Port::setLevel(DbgTrace_Level::Level level)
-{
-  m_level = level;
-}
-
-DbgTrace_Level::Level DbgTrace_Port::getLevel()
-{
-  return m_level;
-}
-
-const char* DbgTrace_Port::getTag()
-{
-  return m_tag;
-}
 
 inline size_t DbgTrace_Port::write(const uint8_t *buffer, size_t size)
 {
