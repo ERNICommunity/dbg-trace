@@ -19,8 +19,15 @@ DbgPrint_Console::DbgPrint_Console()
 void DbgPrint_Console::print(const char* str)
 {
 #ifdef ARDUINO
-  Serial.print(str);
+  Serial.println(str);
 #else
   printf(str);
 #endif
 }
+
+#ifdef ARDUINO
+void DbgPrint_Console::print(const __FlashStringHelper* fshvar)
+{
+  Serial.println(fshvar);
+}
+#endif

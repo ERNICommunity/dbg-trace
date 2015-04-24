@@ -9,6 +9,9 @@
 #define PLAT_DEBUG_TRACE_DBGPRINTFILE_H_
 
 #include "IDbgPrint.h"
+#ifdef ARDUINO
+#include <Arduino.h>
+#endif
 
 class DbgPrint_File : public IDbgPrint
 {
@@ -17,6 +20,9 @@ public:
   virtual ~DbgPrint_File() { }
 
   virtual void print(const char* str);
+#ifdef ARDUINO
+  virtual void print(const __FlashStringHelper* fshvar);
+#endif
 
 private: // forbidden default functions
   DbgPrint_File& operator = (const DbgPrint_File& src); // assignment operator

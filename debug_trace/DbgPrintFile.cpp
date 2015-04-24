@@ -20,3 +20,11 @@ void DbgPrint_File::print(const char str[])
 {
 
 }
+
+#ifdef ARDUINO
+// TODO write to file
+void DbgPrint_File::print(const __FlashStringHelper* fshvar)
+{
+
+}
+#endif

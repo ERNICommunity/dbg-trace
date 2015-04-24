@@ -7,6 +7,10 @@
 #ifndef PLAT_DEBUG_TRACE_IDBGPRINT_H_
 #define PLAT_DEBUG_TRACE_IDBGPRINT_H_
 
+#ifdef ARDUINO
+#include <Arduino.h>
+#endif
+
 class IDbgPrint
 {
 protected: /// interface - constructor must not be accessible
