@@ -16,12 +16,11 @@
 DbgPrint_Console::DbgPrint_Console()
 { }
 
-void DbgPrint_Console::print(const char* buf)
+void DbgPrint_Console::print(const char* str)
 {
 #ifdef ARDUINO
-  Serial.println(buf);
+  Serial.print(str);
 #else
-  printf("%s\n", buf);
+  printf(str);
 #endif
 }
-

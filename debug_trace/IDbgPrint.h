@@ -15,7 +15,10 @@ protected: /// interface - constructor must not be accessible
 public:
   virtual ~IDbgPrint() { }
 
-  virtual void print(const char *buffer) = 0;
+  virtual void print(const char* str) = 0;
+#ifdef ARDUINO
+  virtual void print(const __FlashStringHelper* fshvar) = 0;
+#endif
 
 private: // forbidden default functions
   IDbgPrint& operator = (const IDbgPrint& src); // assignment operator

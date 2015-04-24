@@ -15,13 +15,8 @@
 DbgPrint_File::DbgPrint_File()
 { }
 
-void DbgPrint_File::print(const char* buf)
+// TODO write to file
+void DbgPrint_File::print(const char str[])
 {
 
-  //TODO implement write to file
-#ifdef ARDUINO
-  Serial.println(buf);
-#else
-  printf("%s\n", buf);
-#endif
 }

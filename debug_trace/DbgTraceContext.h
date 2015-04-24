@@ -21,33 +21,49 @@ public:
   virtual ~DbgTrace_Context() { }
   
   /**
-   * Search the port with the given tag. If no such port exists, a new port with the searched tag will be created.
+   * Search the port with the given tag.
    * @param tag The tag to look for.
-   * @return tracePort with the given tag, or a new created port with this tag.
+   * @return tracePort with the given tag, or 0 (nullptr) otherwise.
    */
-  DbgTrace_Port* getTracePort(char* tag);
+  DbgTrace_Port* getTracePort(const char* tag);
+
+  /**
+   * Add's a given port to the single linked list of ports. It's checked that there are not multiple ports
+   * with the same tag in the list.
+   * @param The new port to add.
+   */
+  void addTracePort(DbgTrace_Port* port);
+
+  /**
+   * Delete the port with the given tag.
+   * @param tag The tag to delete.
+   */
+  void deleteTracePort(const char* tag);
 
   /**
    * Search the port with the given name.
    * @param name The name to look for.
    * @return tracePort with the given tag, or 0 (nullptr) otherwise.
    */
-  DbgTrace_Out* getTraceOut(char* name);
+  DbgTrace_Out* getTraceOut(const char* name);
 
   /**
    * Add's a given out to the single linked list of out's. It's checked that there are not multiple out's
    * with the same name in the list.
    * @param The new out to add.
-   * @return true if out could be added to the list. False otherwise, e.g. there is already an out with same name.
    */
-  bool addTraceOut(DbgTrace_Out* out);
+  void addTraceOut(DbgTrace_Out* out);
+
+  /**
+   * Delete the out with the given name.
+   * @param name The name to delete.
+   */
+  void deleteTraceOut(const char* name);
 
   static void assignContext(DbgTrace_Context* context) { s_context = context; }
   static DbgTrace_Context* getContext() { return s_context; }
 
 private:
-  DbgTrace_Port* createTracePort(char* tag);
-
   static DbgTrace_Context* s_context;
   DbgCli_Topic* m_contextDbgTopic;
   DbgTrace_Port* m_firstPort;

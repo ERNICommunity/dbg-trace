@@ -5,43 +5,111 @@
  *      Author: niklausd
  */
 
-#include "DbgTraceLevel.h"
+#include "DbgTraceContext.h"
+#include "DbgTraceOut.h"
 #include "DbgTracePort.h"
-#include <string.h>
-#include <Arduino.h>
 
-DbgTrace_Port::DbgTrace_Port(const char* tag)
-: m_out(0)
-, m_level(DbgTrace_Level::notice)
+#ifdef ARDUINO
+#include <Arduino.h>
+#else
+#include <time.h>
+#endif
+#include <stdio.h>
+
+DbgTrace_Port::DbgTrace_Port(DbgTrace_Context* context, const char* tag, DbgTrace_Out* out, DbgTrace_Level::Level level)
+: m_out(out)
+, m_level(level)
 , m_nextPort(0)
 , m_tag(tag)
-{ }
+{
+  if(0 != context)
+  {
+    context->addTracePort(this);
+  }
+}
 
-DbgTrace_Port::DbgTrace_Port(const __FlashStringHelper* tag)
-: m_out(0)
-, m_level(DbgTrace_Level::notice)
+#ifdef ARDUINO
+DbgTrace_Port::DbgTrace_Port(DbgTrace_Context* context, const __FlashStringHelper* tag, DbgTrace_Out* out, DbgTrace_Level::Level level)
+: m_out(out)
+, m_level(level)
 , m_nextPort(0)
 , m_tag(reinterpret_cast<const char*>(tag))
-{ }
-
-inline size_t DbgTrace_Port::write(const uint8_t *buffer, size_t size)
 {
-  size_t n = 0;
-  n += Serial.print(millis());
-  n += Serial.print(F(" - "));
-  n += Serial.print(getTag());
-  n += Serial.print(F(": "));
-  while (size--)
+  if(0 != context)
   {
-    n += Serial.write(*buffer++);
+    context->addTracePort(this);
   }
-  n += Serial.println();
-  return n;
+}
+#endif
+
+DbgTrace_Port::~DbgTrace_Port()
+{
+  //Delete tracePort in single linked list
+  DbgTrace_Context* context = DbgTrace_Context::getContext();
+  if(0 != context)
+  {
+    context->deleteTracePort(m_tag);
+  }
 }
 
-inline size_t DbgTrace_Port::write(uint8_t num)
+void DbgTrace_Port::printStr(const char* str)
 {
-  size_t n = 0;
-  n += Serial.write(num);
-  return n;
+  if(0 != m_out)
+  {
+#ifdef ARDUINO
+    char timeStr[s_cArduinoTimeStamp];
+#else
+    char timeStr[s_cTestTimeStamp];
+#endif
+    char stream[s_cTraceBufSize];
+    getTime(timeStr);
+    sprintf(stream, "%s - %s: %s\n", timeStr, getTag(), str);
+
+    m_out->print(stream);
+  }
 }
+
+void DbgTrace_Port::printLong(long num)
+{
+  if(0 != m_out)
+  {
+#ifdef ARDUINO
+    char timeStr[s_cArduinoTimeStamp];
+#else
+    char timeStr[s_cTestTimeStamp];
+#endif
+    char stream[s_cTraceBufSize];
+    getTime(timeStr);
+    sprintf(stream, "%s - %s: %ld\n", timeStr, getTag(), num);
+
+    m_out->print(stream);
+  }
+}
+
+void DbgTrace_Port::printDbl(double val)
+{
+  if(0 != m_out)
+  {
+#ifdef ARDUINO
+    char timeStr[s_cArduinoTimeStamp];
+#else
+    char timeStr[s_cTestTimeStamp];
+#endif
+    getTime(timeStr);
+    char stream[s_cTraceBufSize];
+    sprintf(stream, "%s - %s: %f\n", timeStr, getTag(), val);
+
+    m_out->print(stream);
+  }
+}
+
+void DbgTrace_Port::getTime(char* timeStr)
+{
+#ifdef ARDUINO
+  sprintf(timeStr,"%ld", millis());
+#else
+  _strtime(timeStr);
+#endif
+}
+
+

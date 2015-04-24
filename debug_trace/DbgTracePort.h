@@ -9,19 +9,26 @@
 #define PLAT_DEBUG_TRACE_DBGTRACEPORT_H_
 
 #include "DbgTraceLevel.h"
-#include <Print.h>
 
-#define TR_PRINT(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->print((MSG)); } while (0);
-
+class DbgTrace_Context;
 class DbgTrace_Out;
 
-class DbgTrace_Port : public Print
+#define TR_PRINT_STR(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printStr((MSG)); } while (0);
+#define TR_PRINT_LONG(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printLong((MSG)); } while (0);
+#define TR_PRINT_DBL(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printDbl((MSG)); } while (0);
+#ifdef ARDUINO
+#define TR_PRINT_FSTR(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printFStr((MSG)); } while (0);
+#endif
+
+class DbgTrace_Port
 {
 public:
 
-  DbgTrace_Port(const char* tag);
-  DbgTrace_Port(const __FlashStringHelper* tag);
-  virtual ~DbgTrace_Port() { }
+  DbgTrace_Port(DbgTrace_Context* context, const char* tag, DbgTrace_Out* out, DbgTrace_Level::Level level);
+#ifdef ARDUINO
+  DbgTrace_Port(DbgTrace_Context* context, const __FlashStringHelper* tag, DbgTrace_Out* out, DbgTrace_Level::Level level);
+#endif
+  virtual ~DbgTrace_Port();
 
   DbgTrace_Port* getNextPort() { return m_nextPort; }
   void setNextPort(DbgTrace_Port* nextPort) { if(0 != nextPort) m_nextPort = nextPort; }
@@ -32,14 +39,24 @@ public:
   void setLevel(DbgTrace_Level::Level level) { m_level = level; }
   DbgTrace_Level::Level getLevel() { return m_level; }
 
+//  template <typename Tmsg> void print(Tmsg msg);
+  void printStr(const char* str);
+#ifdef ARDUINO
+  void printFStr(const __FlashStringHelper* str) { printStr(reinterpret_cast<const char*>(str)); }
+#endif
+  void printLong(long num);
+  void printDbl(double val);
+
   const char* getTag() { return m_tag; }
 
-  virtual size_t write(const uint8_t *buffer, size_t size);
-  virtual size_t write(uint8_t num);
-
-  static const uint8_t s_cMaxPortTagLength = 16;
+  static const unsigned int s_cMaxPortTagLength = 16;
+  static const unsigned int s_cTestTimeStamp = 10;
+  static const unsigned int s_cArduinoTimeStamp = 12;
+  static const unsigned int s_cTraceBufSize = s_cMaxPortTagLength + s_cMaxPortTagLength + 40;
 
 private:
+  void getTime(char* timeStr);
+
   DbgTrace_Out* m_out;
   DbgTrace_Level::Level m_level;
   DbgTrace_Port* m_nextPort;

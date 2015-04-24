@@ -16,7 +16,7 @@ public:
   DbgPrint_File();
   virtual ~DbgPrint_File() { }
 
-  virtual void print(const char* buf);
+  virtual void print(const char* str);
 
 private: // forbidden default functions
   DbgPrint_File& operator = (const DbgPrint_File& src); // assignment operator

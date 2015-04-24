@@ -8,25 +8,26 @@
 #ifndef PLAT_DEBUG_TRACE_DBGTRACEOUT_H_
 #define PLAT_DEBUG_TRACE_DBGTRACEOUT_H_
 
-#include <Print.h>
-
+class DbgTrace_Context;
 class IDbgPrint;
 
 class DbgTrace_Out
 {
 public:
-  DbgTrace_Out(char* name, IDbgPrint* dbgPrint);
-  virtual ~DbgTrace_Out() { }
+  DbgTrace_Out(DbgTrace_Context* context, const char* name, IDbgPrint* dbgPrint);
+  virtual ~DbgTrace_Out();
 
   DbgTrace_Out* getNextOut() { return m_nextOut; }
   void setNextOut(DbgTrace_Out* nextOut) { if(0 != nextOut) m_nextOut = nextOut; }
 
-  char* getName() { return m_name; }
+  const char* getName() { return m_name; }
 
-  static const uint8_t s_cMaxOutNameLength = 16;
+  void print(const char* str);
+
+  static const unsigned int s_cMaxOutNameLength = 16;
 
 private:
-  char* m_name;
+  const char* m_name;
   DbgTrace_Out* m_nextOut;
   IDbgPrint* m_dbgPrint;
 
