@@ -9,6 +9,9 @@
 #define PLAT_DEBUG_TRACE_DBGTRACEPORT_H_
 
 #include "DbgTraceLevel.h"
+#ifdef ARDUINO
+#include <Arduino.h>
+#endif
 
 class DbgTrace_Context;
 class DbgTrace_Out;

@@ -219,7 +219,7 @@ void DbgTrace_Port::printStr(const char* str)
 #endif
     char stream[s_cTraceBufSize];
     getTime(timeStr);
-    sprintf(stream, "%s - %s: %s\n", timeStr, getTag(), str);
+    snprintf(stream, sizeof(stream), "%s - %s: %s\n", timeStr, getTag(), str);
 
     m_out->print(stream);
   }
@@ -236,7 +236,7 @@ void DbgTrace_Port::printLong(long num)
 #endif
     char stream[s_cTraceBufSize];
     getTime(timeStr);
-    sprintf(stream, "%s - %s: %ld\n", timeStr, getTag(), num);
+    snprintf(stream, sizeof(stream), "%s - %s: %ld\n", timeStr, getTag(), num);
 
     m_out->print(stream);
   }
@@ -253,7 +253,7 @@ void DbgTrace_Port::printDbl(double val)
 #endif
     getTime(timeStr);
     char stream[s_cTraceBufSize];
-    sprintf(stream, "%s - %s: %f\n", timeStr, getTag(), val);
+    snprintf(stream, sizeof(stream), "%s - %s: %f\n", timeStr, getTag(), val);
 
     m_out->print(stream);
   }
