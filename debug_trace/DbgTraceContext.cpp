@@ -74,6 +74,12 @@ void DbgTrace_Context::addTracePort(DbgTrace_Port* port)
     { // special adding of the very first out.
       m_firstPort = port;
     }
+
+    // Create DbgCliTopic and DbgCliCommands for this port
+    if(0 != m_contextDbgTopic)
+    {
+      port->createCliNodes(m_contextDbgTopic);
+    }
   }
 }
 

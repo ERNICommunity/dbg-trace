@@ -48,6 +48,7 @@ public:
   void printDbl(double val);
 
   const char* getTag() { return m_tag; }
+  void createCliNodes(DbgCli_Topic* contextTopic);
 
   static const unsigned int s_cMaxPortTagLength = 16;
   static const unsigned int s_cTestTimeStamp = 10;

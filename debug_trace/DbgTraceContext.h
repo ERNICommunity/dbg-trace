@@ -48,6 +48,13 @@ public:
   DbgTrace_Out* getTraceOut(const char* name);
 
   /**
+     * Return the first trace out, with this, its possible to iterate over all out's
+     * with its getnext() methods.
+     * @return first trace out, or 0 (nullptr) if no out exists.
+     */
+  DbgTrace_Out* getFirstTraceOut() { return m_firstOut; }
+
+  /**
    * Add's a given out to the single linked list of out's. It's checked that there are not multiple out's
    * with the same name in the list.
    * @param The new out to add.
