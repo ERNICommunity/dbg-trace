@@ -25,7 +25,8 @@ public:
     warning   =  4,
     notice    =  5,
     info      =  6,
-    debug     =  7
+    debug     =  7,
+    LEVEL_ENUM_LIMIT     // not a level, used for get the enum size
   } Level;
 
   static const char* levelToString(Level level)

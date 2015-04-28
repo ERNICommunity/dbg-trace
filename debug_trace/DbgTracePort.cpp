@@ -44,11 +44,11 @@ public:
       if((0 !=  m_tracePort) && (0 != m_tracePort->getOut()))
       {
         char buf[20 + DbgTrace_Out::s_cMaxOutNameLength];
-        snprintf(buf, sizeof(buf-1), "Out: \"%s\"" , m_tracePort->getOut()->getName());
+        snprintf(buf, sizeof(buf), "Out: \"%s\"" , m_tracePort->getOut()->getName());
 #ifdef ARDUINO
-        Serial.println(buf);
+        Serial.print(buf);
 #else
-        printf(buf);
+        println(buf);
 #endif
       }
     }
@@ -62,16 +62,16 @@ public:
         if(0 != newOut)
         {
           m_tracePort->setOut(newOut);
-          snprintf(buf, sizeof(buf-1),"OK! Out: \"%s\"" , m_tracePort->getOut()->getName());
+          snprintf(buf, sizeof(buf),"OK! Out: \"%s\"" , m_tracePort->getOut()->getName());
         }
         else
         {
-          snprintf(buf, sizeof(buf-1), "Fail! Out: \"%s\"" , m_tracePort->getOut()->getName());
+          snprintf(buf, sizeof(buf), "Fail! Out: \"%s\"" , m_tracePort->getOut()->getName());
         }
  #ifdef ARDUINO
-          Serial.println(buf);
+          Serial.print(buf);
  #else
-          printf(buf);
+          println(buf);
  #endif
       }
     }
@@ -84,23 +84,34 @@ public:
         while(0 != tmpOut)
         {
           if((0 != m_tracePort->getOut()) &&
-             (0 != strncmp(tmpOut->getName(), m_tracePort->getOut()->getName(), DbgTrace_Out::s_cMaxOutNameLength)))
+             (0 == strncmp(tmpOut->getName(), m_tracePort->getOut()->getName(), DbgTrace_Out::s_cMaxOutNameLength)))
           {
             // mark currently used out
-            snprintf(buf, sizeof(buf-1),">%s" , tmpOut->getName());
+            snprintf(buf, sizeof(buf),">%s" , tmpOut->getName());
           }
           else
           {
-            snprintf(buf, sizeof(buf-1), " %s" , tmpOut->getName());
+            snprintf(buf, sizeof(buf), " %s" , tmpOut->getName());
           }
 #ifdef ARDUINO
           Serial.println(buf);
  #else
-          printf(buf);
+          println(buf);
  #endif
           tmpOut = tmpOut->getNextOut();
         }
       }
+    }
+    else
+    {
+#ifdef ARDUINO
+  Serial.print(F("Unknown command: "));
+  Serial.println(cmd);
+  Serial.println(this->getHelpText());
+#else
+  println("Unknown command: %s", cmd);
+  printf(this->getHelpText());
+#endif
     }
   }
 private:
@@ -132,11 +143,11 @@ public:
       if(0 !=  m_tracePort)
       {
         char buf[20 + DbgTrace_Level::s_cMaxLevelLength];
-        snprintf(buf, sizeof(buf-1), "Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
+        snprintf(buf, sizeof(buf), "Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
 #ifdef ARDUINO
         Serial.println(buf);
 #else
-        printf(buf);
+        printfln(buf);
 #endif
       }
     }
@@ -150,18 +161,55 @@ public:
         if(DbgTrace_Level::none != newLevel)
         {
           m_tracePort->setLevel(newLevel);
-          snprintf(buf, sizeof(buf-1),"OK! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
+          snprintf(buf, sizeof(buf),"OK! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
         }
         else
         {
-          snprintf(buf, sizeof(buf-1), "Fail! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
+          snprintf(buf, sizeof(buf), "Fail! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
         }
  #ifdef ARDUINO
-          Serial.println(buf);
+          Serial.print(buf);
  #else
-          printf(buf);
+          printfln(buf);
  #endif
       }
+    }
+    else if(0 == strncmp(cmd, "list", 5))
+    {
+      if(0 !=  m_tracePort)
+      {
+        unsigned int level = 0;
+        char buf[4 + DbgTrace_Level::s_cMaxLevelLength];
+        while(DbgTrace_Level::LEVEL_ENUM_LIMIT != level)
+        {
+          if(level == m_tracePort->getLevel())
+          {
+            // mark currently used out
+            snprintf(buf, sizeof(buf),">%s" , DbgTrace_Level::levelToString(static_cast<DbgTrace_Level::Level>(level)));
+          }
+          else
+          {
+            snprintf(buf, sizeof(buf)," %s" , DbgTrace_Level::levelToString(static_cast<DbgTrace_Level::Level>(level)));
+          }
+#ifdef ARDUINO
+          Serial.println(buf);
+ #else
+          println(buf);
+ #endif
+          level++;
+        }
+      }
+    }
+    else
+    {
+    #ifdef ARDUINO
+      Serial.print(F("Unknown command: "));
+      Serial.println(cmd);
+      Serial.println(this->getHelpText());
+    #else
+      println("Unknown command: %s", cmd);
+      printf(this->getHelpText());
+    #endif
     }
   }
 private:
@@ -219,7 +267,7 @@ void DbgTrace_Port::printStr(const char* str)
 #endif
     char stream[s_cTraceBufSize];
     getTime(timeStr);
-    snprintf(stream, sizeof(stream), "%s - %s: %s\n", timeStr, getTag(), str);
+    snprintf(stream, sizeof(stream), "%s - %s: %s", timeStr, getTag(), str);
 
     m_out->print(stream);
   }
@@ -236,7 +284,7 @@ void DbgTrace_Port::printLong(long num)
 #endif
     char stream[s_cTraceBufSize];
     getTime(timeStr);
-    snprintf(stream, sizeof(stream), "%s - %s: %ld\n", timeStr, getTag(), num);
+    snprintf(stream, sizeof(stream), "%s - %s: %ld", timeStr, getTag(), num);
 
     m_out->print(stream);
   }
@@ -253,7 +301,7 @@ void DbgTrace_Port::printDbl(double val)
 #endif
     getTime(timeStr);
     char stream[s_cTraceBufSize];
-    snprintf(stream, sizeof(stream), "%s - %s: %f\n", timeStr, getTag(), val);
+    snprintf(stream, sizeof(stream), "%s - %s: %f", timeStr, getTag(), val);
 
     m_out->print(stream);
   }
@@ -270,19 +318,12 @@ void DbgTrace_Port::getTime(char* timeStr)
 
 void DbgTrace_Port::createCliNodes(DbgCli_Topic* contextTopic)
 {
-  char helpMsg[] = ": change level or out";
-  char helpText[s_cMaxPortTagLength + (sizeof(helpMsg)/sizeof(char))];
-
-  snprintf(helpText, sizeof(helpText-1), "%s%s", m_tag, helpMsg);
-
-  DbgCli_Topic* portTopic = new DbgCli_Topic(contextTopic, m_tag, helpText);
+  DbgCli_Topic* portTopic = new DbgCli_Topic(contextTopic, m_tag, "Offers get/set access to output and level");
   if(0 != m_out)
   {
     // Create DbgCli commands for out and level of this port
-    new DbgCli_Command_ChangeOut(this, portTopic, "outCmd", "cmd's: get, set + out, list");
-    new DbgCli_Command_ChangeLevel(this, portTopic, "levelCmd", "cmd's: get, set + level");
+    new DbgCli_Command_ChangeOut(this, portTopic, "outCmd", "Cmd's: get, set outName, list");
+    new DbgCli_Command_ChangeLevel(this, portTopic, "levelCmd", "Cmd's: get, set levelName, list");
   }
 }
-
-
 
