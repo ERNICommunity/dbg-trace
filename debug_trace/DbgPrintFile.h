@@ -13,14 +13,33 @@
 #include <Arduino.h>
 #endif
 
+/**
+ * @brief Debug trace print for printing to a file.
+ */
 class DbgPrint_File : public IDbgPrint
 {
 public:
+
+  /**
+   * Constructor of a debug trace file printer.
+   */
   DbgPrint_File();
+
+  /**
+   * Destructor of a debug trace file printer.
+   */
   virtual ~DbgPrint_File() { }
 
+  /**
+   * @brief Store a string to a file.
+   * @param str Const char message to be stored.
+   */
   virtual void print(const char* str);
 #ifdef ARDUINO
+  /**
+   * @brief Store a string from flash memory to a file.  (ram optimization for Arduino).
+   * @param fshvar Const char message to be stored.
+   */
   virtual void print(const __FlashStringHelper* fshvar);
 #endif
 

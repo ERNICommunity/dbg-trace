@@ -22,6 +22,9 @@
 // concrete command class DbgCli_Command_ChangeOut
 //-----------------------------------------------------------------------------
 
+/**
+ * @brief Concrete cli command implementation to access the output of a trace port.
+ */
 class DbgCli_Command_ChangeOut : public DbgCli_Command
 {
 
@@ -46,9 +49,9 @@ public:
         char buf[20 + DbgTrace_Out::s_cMaxOutNameLength];
         snprintf(buf, sizeof(buf), "Out: \"%s\"" , m_tracePort->getOut()->getName());
 #ifdef ARDUINO
-        Serial.print(buf);
+        Serial.println(buf);
 #else
-        println(buf);
+        printf("%s\n", buf);
 #endif
       }
     }
@@ -69,9 +72,9 @@ public:
           snprintf(buf, sizeof(buf), "Fail! Out: \"%s\"" , m_tracePort->getOut()->getName());
         }
  #ifdef ARDUINO
-          Serial.print(buf);
+          Serial.println(buf);
  #else
-          println(buf);
+          printf("%s\n", buf);
  #endif
       }
     }
@@ -86,7 +89,7 @@ public:
           if((0 != m_tracePort->getOut()) &&
              (0 == strncmp(tmpOut->getName(), m_tracePort->getOut()->getName(), DbgTrace_Out::s_cMaxOutNameLength)))
           {
-            // mark currently used out
+            // mark currently used output
             snprintf(buf, sizeof(buf),">%s" , tmpOut->getName());
           }
           else
@@ -96,7 +99,7 @@ public:
 #ifdef ARDUINO
           Serial.println(buf);
  #else
-          println(buf);
+          printf("%s\n", buf);
  #endif
           tmpOut = tmpOut->getNextOut();
         }
@@ -109,8 +112,8 @@ public:
   Serial.println(cmd);
   Serial.println(this->getHelpText());
 #else
-  println("Unknown command: %s", cmd);
-  printf(this->getHelpText());
+  printf("Unknown command: %s\n", cmd);
+  printf("%s\n", this->getHelpText());
 #endif
     }
   }
@@ -122,6 +125,9 @@ private:
 // concrete command class DbgCli_Command_ChangeLevel
 //-----------------------------------------------------------------------------
 
+/**
+ * @brief Concrete cli command implementation to access the level of a trace port.
+ */
 class DbgCli_Command_ChangeLevel : public DbgCli_Command
 {
 
@@ -144,10 +150,11 @@ public:
       {
         char buf[20 + DbgTrace_Level::s_cMaxLevelLength];
         snprintf(buf, sizeof(buf), "Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
+        // Print current level
 #ifdef ARDUINO
         Serial.println(buf);
 #else
-        printfln(buf);
+        printf("%s\n", buf);
 #endif
       }
     }
@@ -157,6 +164,7 @@ public:
       {
         char buf[20 + DbgTrace_Level::s_cMaxLevelLength];
 
+        // Get new level, as additional parameter
         DbgTrace_Level::Level newLevel = DbgTrace_Level::stringToLevel(args[idxToFirstArgToHandle+1]);
         if(DbgTrace_Level::none != newLevel)
         {
@@ -167,10 +175,11 @@ public:
         {
           snprintf(buf, sizeof(buf), "Fail! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
         }
+        // Print new level
  #ifdef ARDUINO
-          Serial.print(buf);
+          Serial.println(buf);
  #else
-          printfln(buf);
+          printf("%s\n", buf);
  #endif
       }
     }
@@ -178,13 +187,14 @@ public:
     {
       if(0 !=  m_tracePort)
       {
-        unsigned int level = 0;
+        int level = 0;
         char buf[4 + DbgTrace_Level::s_cMaxLevelLength];
         while(DbgTrace_Level::LEVEL_ENUM_LIMIT != level)
         {
+          // List all valid levels, line by line.
           if(level == m_tracePort->getLevel())
           {
-            // mark currently used out
+            // mark currently used level
             snprintf(buf, sizeof(buf),">%s" , DbgTrace_Level::levelToString(static_cast<DbgTrace_Level::Level>(level)));
           }
           else
@@ -194,7 +204,7 @@ public:
 #ifdef ARDUINO
           Serial.println(buf);
  #else
-          println(buf);
+          printf("%s\n", buf);
  #endif
           level++;
         }
@@ -207,8 +217,8 @@ public:
       Serial.println(cmd);
       Serial.println(this->getHelpText());
     #else
-      println("Unknown command: %s", cmd);
-      printf(this->getHelpText());
+      printf("Unknown command: %s\n", cmd);
+      printf("%s\n", this->getHelpText());
     #endif
     }
   }
