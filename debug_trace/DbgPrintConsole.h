@@ -13,14 +13,33 @@
 #include <Arduino.h>
 #endif
 
+/**
+ * @brief Debug trace print for printing to a console output.
+ */
 class DbgPrint_Console : public IDbgPrint
 {
 public:
+
+  /**
+   * Constructor of a debug trace console printer.
+   */
   DbgPrint_Console();
+
+  /**
+   * Destructor of a debug trace console printer.
+   */
   virtual ~DbgPrint_Console() { }
 
+  /**
+   * @brief Prints a string to the console output.
+   * @param str Const char message to be printed.
+   */
   virtual void print(const char* str);
 #ifdef ARDUINO
+  /**
+   * @brief Prints a string from flash memory to the console output. (ram optimization for Arduino).
+   * @param fshvar Const char message to be printed.
+   */
   virtual void print(const __FlashStringHelper* fshvar);
 #endif
 
