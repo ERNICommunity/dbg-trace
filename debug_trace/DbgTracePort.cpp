@@ -311,7 +311,8 @@ void DbgTrace_Port::printDbl(double val)
 #endif
     getTime(timeStr);
     char stream[s_cTraceBufSize];
-    snprintf(stream, sizeof(stream), "%s - %s: %f", timeStr, getTag(), val);
+    snprintf(stream, sizeof(stream), "%s - %s: ", timeStr, getTag());
+    dtostrf(val, 6, 3, &stream[12]);
 
     m_out->print(stream);
   }
