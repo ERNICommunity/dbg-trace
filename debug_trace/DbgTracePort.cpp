@@ -333,8 +333,8 @@ void DbgTrace_Port::createCliNodes(DbgCli_Topic* contextTopic)
   if(0 != m_out)
   {
     // Create DbgCli commands for out and level of this port
-    new DbgCli_Command_ChangeOut(this, portTopic, "outCmd", "Cmds: get, set <outName>, list");
-    new DbgCli_Command_ChangeLevel(this, portTopic, "lvlCmd", "Cmds: get, set <levelName>, list");
+    new DbgCli_Command_ChangeOut(this, portTopic, "out", "Cmds: get, set <outName>, list");
+    new DbgCli_Command_ChangeLevel(this, portTopic, "lvl", "Cmds: get, set <levelName>, list");
   }
 }
 

@@ -19,8 +19,8 @@ class DbgTrace_Port;
  * The ownership of the single linked lists is handled by the ports and outputs itself. The context has a pointer to the first port and output to be
  * able to iterate through the elements of the list.
  *
- * A debug trace context is has a debug CLI topic. All instantiated ports, attach they're own debug CLI commands to this topic. With the commands the user
- * is been able to edit the port settings at the runtime of the application.
+ * The debug trace context has its own debug CLI topic. All instantiated ports attach their own debug CLI commands to this topic. With the commands the user
+ * is will be able to edit the port settings during application runtime.
  */
 class DbgTrace_Context
 {
