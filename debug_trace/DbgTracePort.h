@@ -15,6 +15,7 @@
 
 class DbgTrace_Context;
 class DbgTrace_Out;
+class DbgCli_Topic;
 
 #define TR_PRINT_STR(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printStr((MSG)); } while (0);
 #define TR_PRINT_LONG(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printLong((MSG)); } while (0);
