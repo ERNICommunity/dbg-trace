@@ -32,26 +32,23 @@ class DbgTrace_Out;
 class DbgTrace_Port
 {
 public:
-
   /**
    * @brief Constructor to create a new port instance. The port will be automatically assigned to the mentioned debug trace context.
-   * @param context Pointer to the global debug trace context.
-   * @param tag The tag name of the port, which should be unique and and not longer than the specified max size. The port can afterwards globally
-   * accessed by its content and tag.
+   * @param tag The tag name of the port, which should be unique and and not longer than the specified max size.
+   *            The port can afterwards globally accessed by its content and tag.
    * @param out Pointer to an output, for printing the traces.
    * @param level Trace level of the port. All traces with a similar or higher trace level will be printed.
    */
-  DbgTrace_Port(DbgTrace_Context* context, const char* tag, DbgTrace_Out* out, DbgTrace_Level::Level level);
+  DbgTrace_Port(const char* tag, const char* outName, DbgTrace_Level::Level level);
 #ifdef ARDUINO
   /**
    * @brief Constructor to create a new port instance. With a tag stored in flash (ram optimized version for embedded controllers)
-   * @param context Pointer to the global debug trace context.
-   * @param tag The tag name of the port, which should be unique and and not longer than the specified max size. The port can afterwards globally
-   * accessed by its content and tag.
+   * @param tag The tag name of the port, which should be unique and and not longer than the specified max size.
+   *            The port can afterwards globally accessed by its content and tag.
    * @param out Pointer to an output, for printing the traces.
    * @param level Trace level of the port. All traces with a similar or higher trace level will be printed.
    */
-  DbgTrace_Port(DbgTrace_Context* context, const __FlashStringHelper* tag, DbgTrace_Out* out, DbgTrace_Level::Level level);
+  DbgTrace_Port(const __FlashStringHelper* tag, const __FlashStringHelper* outName, DbgTrace_Level::Level level);
 #endif
 
   /**
