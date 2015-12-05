@@ -21,7 +21,7 @@ void DbgPrint_Console::print(const char* str)
 #ifdef ARDUINO
   Serial.println(str);
 #else
-  printf(str);
+  printf("%s\n", str);
 #endif
 }
 

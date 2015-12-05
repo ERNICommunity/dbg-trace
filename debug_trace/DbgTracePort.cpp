@@ -313,8 +313,12 @@ void DbgTrace_Port::printDbl(double val)
 #endif
     getTime(timeStr);
     char stream[s_cTraceBufSize];
+#ifdef ARDUINO
     snprintf(stream, sizeof(stream), "%s - %s: ", timeStr, getTag());
     dtostrf(val, 6, 3, &stream[12]);
+#else
+    snprintf(stream, sizeof(stream), "%s - %s: %f", timeStr, getTag(), val);
+#endif
 
     m_out->print(stream);
   }
