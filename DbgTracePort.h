@@ -21,7 +21,9 @@ class DbgCli_Topic;
 #define TR_PRINT_LONG(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printLong((MSG)); } while (0);
 #define TR_PRINT_DBL(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printDbl((MSG)); } while (0);
 #ifdef ARDUINO
+#ifndef __ets__
 #define TR_PRINT_FSTR(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printFStr((MSG)); } while (0);
+#endif
 #endif
 
 /**
@@ -42,7 +44,9 @@ public:
    */
   DbgTrace_Port(const char* tag, DbgTrace_Level::Level level, const char* outName);
   DbgTrace_Port(const char* tag, DbgTrace_Level::Level level);
+
 #ifdef ARDUINO
+#ifndef __ets__
   /**
    * @brief Constructor to create a new port instance. With a tag stored in flash (ram optimized version for embedded controllers)
    * @param tag The tag name of the port, which should be unique and and not longer than the specified max size.
@@ -52,6 +56,7 @@ public:
    */
   DbgTrace_Port(const __FlashStringHelper* tag, DbgTrace_Level::Level level, const __FlashStringHelper* outName);
   DbgTrace_Port(const __FlashStringHelper* tag, DbgTrace_Level::Level level);
+#endif
 #endif
 
   /**
@@ -105,12 +110,14 @@ public:
    */
   void printStr(const char* str);
 #ifdef ARDUINO
+#ifndef __ets__
   /**
    * @brief Same as printStr, but with a string stored in flash (ram optimized version for embedded controllers)
    * Don't call this function directly, use the defined macros.
    * @param str  message to print out.
    */
   void printFStr(const __FlashStringHelper* str) { printStr(reinterpret_cast<const char*>(str)); }
+#endif
 #endif
 
   /**

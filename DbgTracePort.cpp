@@ -108,7 +108,11 @@ public:
     else
     {
 #ifdef ARDUINO
+#ifndef __ets__
   Serial.print(F("Unknown command: "));
+#else
+  Serial.print("Unknown command: ");
+#endif
   Serial.println(cmd);
   Serial.println(this->getHelpText());
 #else
@@ -257,6 +261,7 @@ DbgTrace_Port::DbgTrace_Port(const char* tag, DbgTrace_Level::Level level)
 }
 
 #ifdef ARDUINO
+#ifndef __ets__
 DbgTrace_Port::DbgTrace_Port(const __FlashStringHelper* tag, DbgTrace_Level::Level level, const __FlashStringHelper* outName)
 : m_out(DbgTrace_Context::getContext()->getTraceOut(reinterpret_cast<const char*>(outName)))
 , m_level(level)
@@ -282,6 +287,7 @@ DbgTrace_Port::DbgTrace_Port(const __FlashStringHelper* tag, DbgTrace_Level::Lev
     context->addTracePort(this);
   }
 }
+#endif
 #endif
 
 DbgTrace_Port::~DbgTrace_Port()
