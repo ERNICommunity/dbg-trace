@@ -37,19 +37,21 @@ public:
    * @brief Constructor to create a new port instance. The port will be automatically assigned to the mentioned debug trace context.
    * @param tag The tag name of the port, which should be unique and and not longer than the specified max size.
    *            The port can afterwards globally accessed by its content and tag.
-   * @param out Pointer to an output, for printing the traces.
    * @param level Trace level of the port. All traces with a similar or higher trace level will be printed.
+   * @param out Name of an output, for printing the traces (optional, default: "trConOut").
    */
-  DbgTrace_Port(const char* tag, const char* outName, DbgTrace_Level::Level level);
+  DbgTrace_Port(const char* tag, DbgTrace_Level::Level level, const char* outName);
+  DbgTrace_Port(const char* tag, DbgTrace_Level::Level level);
 #ifdef ARDUINO
   /**
    * @brief Constructor to create a new port instance. With a tag stored in flash (ram optimized version for embedded controllers)
    * @param tag The tag name of the port, which should be unique and and not longer than the specified max size.
    *            The port can afterwards globally accessed by its content and tag.
-   * @param out Pointer to an output, for printing the traces.
    * @param level Trace level of the port. All traces with a similar or higher trace level will be printed.
+   * @param out Name of an output, for printing the traces (optional, default: "trConOut").
    */
-  DbgTrace_Port(const __FlashStringHelper* tag, const __FlashStringHelper* outName, DbgTrace_Level::Level level);
+  DbgTrace_Port(const __FlashStringHelper* tag, DbgTrace_Level::Level level, const __FlashStringHelper* outName);
+  DbgTrace_Port(const __FlashStringHelper* tag, DbgTrace_Level::Level level);
 #endif
 
   /**

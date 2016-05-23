@@ -230,11 +230,24 @@ private:
 // Class DbgTrace_Port
 //-----------------------------------------------------------------------------
 
-DbgTrace_Port::DbgTrace_Port(const char* tag, const char* outName, DbgTrace_Level::Level level)
+DbgTrace_Port::DbgTrace_Port(const char* tag, DbgTrace_Level::Level level, const char* outName)
 : m_out(DbgTrace_Context::getContext()->getTraceOut(outName))
 , m_level(level)
 , m_nextPort(0)
-, m_tag(tag)
+, m_tag(reinterpret_cast<const char*>(tag))
+{
+  DbgTrace_Context* context = DbgTrace_Context::getContext();
+  if(0 != context)
+  {
+    context->addTracePort(this);
+  }
+}
+
+DbgTrace_Port::DbgTrace_Port(const char* tag, DbgTrace_Level::Level level)
+: m_out(DbgTrace_Context::getContext()->getTraceOut(reinterpret_cast<const char*>("trConOut")))
+, m_level(level)
+, m_nextPort(0)
+, m_tag(reinterpret_cast<const char*>(tag))
 {
   DbgTrace_Context* context = DbgTrace_Context::getContext();
   if(0 != context)
@@ -244,8 +257,21 @@ DbgTrace_Port::DbgTrace_Port(const char* tag, const char* outName, DbgTrace_Leve
 }
 
 #ifdef ARDUINO
-DbgTrace_Port::DbgTrace_Port(const __FlashStringHelper* tag, const __FlashStringHelper* outName, DbgTrace_Level::Level level)
+DbgTrace_Port::DbgTrace_Port(const __FlashStringHelper* tag, DbgTrace_Level::Level level, const __FlashStringHelper* outName)
 : m_out(DbgTrace_Context::getContext()->getTraceOut(reinterpret_cast<const char*>(outName)))
+, m_level(level)
+, m_nextPort(0)
+, m_tag(reinterpret_cast<const char*>(tag))
+{
+  DbgTrace_Context* context = DbgTrace_Context::getContext();
+  if(0 != context)
+  {
+    context->addTracePort(this);
+  }
+}
+
+DbgTrace_Port::DbgTrace_Port(const __FlashStringHelper* tag, DbgTrace_Level::Level level)
+: m_out(DbgTrace_Context::getContext()->getTraceOut(reinterpret_cast<const char*>(F("trConOut"))))
 , m_level(level)
 , m_nextPort(0)
 , m_tag(reinterpret_cast<const char*>(tag))
