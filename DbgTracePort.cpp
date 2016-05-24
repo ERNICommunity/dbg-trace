@@ -39,85 +39,119 @@ public:
 
   void execute(unsigned int argc, const char** args, unsigned int idxToFirstArgToHandle)
   {
-    const char* cmd = args[idxToFirstArgToHandle];
-    DbgTrace_Context* context = DbgTrace_Context::getContext();
-
-    if(0 == strncmp(cmd, "get", 4))
+    if (argc > idxToFirstArgToHandle)
     {
-      if((0 !=  m_tracePort) && (0 != m_tracePort->getOut()))
-      {
-        char buf[20 + DbgTrace_Out::s_cMaxOutNameLength];
-        snprintf(buf, sizeof(buf), "Out: \"%s\"" , m_tracePort->getOut()->getName());
-#ifdef ARDUINO
-        Serial.println(buf);
-#else
-        printf("%s\n", buf);
-#endif
-      }
-    }
-    else if(0 == strncmp(cmd, "set", 4))
-    {
-      if((0 !=  m_tracePort) && (0 != m_tracePort->getOut()) && (0 != context))
-      {
-        DbgTrace_Out* newOut = context->getTraceOut(args[idxToFirstArgToHandle+1]);
-        char buf[20 + DbgTrace_Out::s_cMaxOutNameLength];
+      const char* cmd = args[idxToFirstArgToHandle];
+      DbgTrace_Context* context = DbgTrace_Context::getContext();
 
-        if(0 != newOut)
+      if(0 == strncmp(cmd, "get", 4))
+      {
+        if((0 !=  m_tracePort) && (0 != m_tracePort->getOut()))
         {
-          m_tracePort->setOut(newOut);
-          snprintf(buf, sizeof(buf),"OK! Out: \"%s\"" , m_tracePort->getOut()->getName());
-        }
-        else
-        {
-          snprintf(buf, sizeof(buf), "Fail! Out: \"%s\"" , m_tracePort->getOut()->getName());
-        }
- #ifdef ARDUINO
+          char buf[20 + DbgTrace_Out::s_cMaxOutNameLength];
+          snprintf(buf, sizeof(buf), "Out: \"%s\"" , m_tracePort->getOut()->getName());
+  #ifdef ARDUINO
           Serial.println(buf);
- #else
+  #else
           printf("%s\n", buf);
- #endif
+  #endif
+        }
       }
-    }
-    else if((0 == strncmp(cmd, "list", 5)) && (0 != context))
-    {
-      DbgTrace_Out* tmpOut = context->getFirstTraceOut();
-      if((0 !=  m_tracePort) && (0 != m_tracePort->getOut()))
+      else if(0 == strncmp(cmd, "set", 4))
       {
-        char buf[20 + DbgTrace_Out::s_cMaxOutNameLength];
-        while(0 != tmpOut)
+        if((0 !=  m_tracePort) && (0 != m_tracePort->getOut()) && (0 != context))
         {
-          if((0 != m_tracePort->getOut()) &&
-             (0 == strncmp(tmpOut->getName(), m_tracePort->getOut()->getName(), DbgTrace_Out::s_cMaxOutNameLength)))
+          if (argc <= idxToFirstArgToHandle+1)
           {
-            // mark currently used output
-            snprintf(buf, sizeof(buf),">%s" , tmpOut->getName());
+#ifdef ARDUINO
+#ifndef __ets__
+            Serial.println(F("Output Name missing"));
+#else
+            Serial.println("Output Name missing");
+#endif
+            Serial.println(this->getHelpText());
+#else
+            printf("Output Name missing\n");
+            printf("%s\n", this->getHelpText());
+#endif
           }
           else
           {
-            snprintf(buf, sizeof(buf), " %s" , tmpOut->getName());
+            DbgTrace_Out* newOut = context->getTraceOut(args[idxToFirstArgToHandle+1]);
+            char buf[20 + DbgTrace_Out::s_cMaxOutNameLength];
+
+            if(0 != newOut)
+            {
+              m_tracePort->setOut(newOut);
+              snprintf(buf, sizeof(buf), "OK! Out: \"%s\"" , m_tracePort->getOut()->getName());
+            }
+            else
+            {
+              snprintf(buf, sizeof(buf), "Fail! Out: \"%s\"" , m_tracePort->getOut()->getName());
+            }
+     #ifdef ARDUINO
+            Serial.println(buf);
+     #else
+            printf("%s\n", buf);
+     #endif
           }
-#ifdef ARDUINO
-          Serial.println(buf);
- #else
-          printf("%s\n", buf);
- #endif
-          tmpOut = tmpOut->getNextOut();
         }
+      }
+      else if((0 == strncmp(cmd, "list", 5)) && (0 != context))
+      {
+        DbgTrace_Out* tmpOut = context->getFirstTraceOut();
+        if((0 !=  m_tracePort) && (0 != m_tracePort->getOut()))
+        {
+          char buf[20 + DbgTrace_Out::s_cMaxOutNameLength];
+          while(0 != tmpOut)
+          {
+            if((0 != m_tracePort->getOut()) &&
+               (0 == strncmp(tmpOut->getName(), m_tracePort->getOut()->getName(), DbgTrace_Out::s_cMaxOutNameLength)))
+            {
+              // mark currently used output
+              snprintf(buf, sizeof(buf),">%s" , tmpOut->getName());
+            }
+            else
+            {
+              snprintf(buf, sizeof(buf), " %s" , tmpOut->getName());
+            }
+  #ifdef ARDUINO
+            Serial.println(buf);
+   #else
+            printf("%s\n", buf);
+   #endif
+            tmpOut = tmpOut->getNextOut();
+          }
+        }
+      }
+      else
+      {
+  #ifdef ARDUINO
+  #ifndef __ets__
+    Serial.print(F("Unknown command: "));
+  #else
+    Serial.print("Unknown command: ");
+  #endif
+    Serial.println(cmd);
+    Serial.println(this->getHelpText());
+  #else
+    printf("Unknown command: %s\n", cmd);
+    printf("%s\n", this->getHelpText());
+  #endif
       }
     }
     else
     {
 #ifdef ARDUINO
 #ifndef __ets__
-  Serial.print(F("Unknown command: "));
+      Serial.println(F("Cmd missing"));
 #else
-  Serial.print("Unknown command: ");
+      Serial.println("Cmd missing");
 #endif
-  Serial.println(cmd);
-  Serial.println(this->getHelpText());
+      Serial.println(this->getHelpText());
 #else
-  printf("Unknown command: %s\n", cmd);
-  printf("%s\n", this->getHelpText());
+      printf("Cmd missing\n");
+      printf("%s\n", this->getHelpText());
 #endif
     }
   }
@@ -146,84 +180,122 @@ public:
 
   void execute(unsigned int argc, const char** args, unsigned int idxToFirstArgToHandle)
   {
-    const char* cmd = args[idxToFirstArgToHandle];
-
-    if(0 == strncmp(cmd, "get", 4))
+    if (argc > idxToFirstArgToHandle)
     {
-      if(0 !=  m_tracePort)
+      const char* cmd = args[idxToFirstArgToHandle];
+
+      if (0 == strncmp(cmd, "get", 4))
       {
-        char buf[20 + DbgTrace_Level::s_cMaxLevelLength];
-        snprintf(buf, sizeof(buf), "Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
-        // Print current level
+        if (0 !=  m_tracePort)
+        {
+          char buf[20 + DbgTrace_Level::s_cMaxLevelLength];
+          snprintf(buf, sizeof(buf), "Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
+          // Print current level
 #ifdef ARDUINO
-        Serial.println(buf);
-#else
-        printf("%s\n", buf);
-#endif
-      }
-    }
-    else if(0 == strncmp(cmd, "set", 4))
-    {
-      if(0 !=  m_tracePort)
-      {
-        char buf[20 + DbgTrace_Level::s_cMaxLevelLength];
-
-        // Get new level, as additional parameter
-        DbgTrace_Level::Level newLevel = DbgTrace_Level::stringToLevel(args[idxToFirstArgToHandle+1]);
-        if(DbgTrace_Level::none != newLevel)
-        {
-          m_tracePort->setLevel(newLevel);
-          snprintf(buf, sizeof(buf),"OK! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
-        }
-        else
-        {
-          snprintf(buf, sizeof(buf), "Fail! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
-        }
-        // Print new level
- #ifdef ARDUINO
           Serial.println(buf);
- #else
+#else
           printf("%s\n", buf);
- #endif
+#endif
+        }
       }
-    }
-    else if(0 == strncmp(cmd, "list", 5))
-    {
-      if(0 !=  m_tracePort)
+      else if (0 == strncmp(cmd, "set", 4))
       {
-        int level = 0;
-        char buf[4 + DbgTrace_Level::s_cMaxLevelLength];
-        while(DbgTrace_Level::LEVEL_ENUM_LIMIT != level)
+        if (0 !=  m_tracePort)
         {
-          // List all valid levels, line by line.
-          if(level == m_tracePort->getLevel())
+          if (argc <= idxToFirstArgToHandle+1)
           {
-            // mark currently used level
-            snprintf(buf, sizeof(buf),">%s" , DbgTrace_Level::levelToString(static_cast<DbgTrace_Level::Level>(level)));
+#ifdef ARDUINO
+#ifndef __ets__
+            Serial.println(F("Level missing"));
+#else
+            Serial.println("Level missing");
+#endif
+            Serial.println(this->getHelpText());
+#else
+            printf("Level missing\n");
+            printf("%s\n", this->getHelpText());
+#endif
           }
           else
           {
-            snprintf(buf, sizeof(buf)," %s" , DbgTrace_Level::levelToString(static_cast<DbgTrace_Level::Level>(level)));
+            char buf[20 + DbgTrace_Level::s_cMaxLevelLength];
+
+            // Get new level, as additional parameter
+            DbgTrace_Level::Level newLevel = DbgTrace_Level::stringToLevel(args[idxToFirstArgToHandle+1]);
+            if (DbgTrace_Level::none != newLevel)
+            {
+              m_tracePort->setLevel(newLevel);
+              snprintf(buf, sizeof(buf), "OK! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
+            }
+            else
+            {
+              snprintf(buf, sizeof(buf), "Fail! Level: \"%s\"" , DbgTrace_Level::levelToString(m_tracePort->getLevel()));
+            }
+            // Print new level
+  #ifdef ARDUINO
+            Serial.println(buf);
+  #else
+            printf("%s\n", buf);
+  #endif
           }
-#ifdef ARDUINO
-          Serial.println(buf);
- #else
-          printf("%s\n", buf);
- #endif
-          level++;
         }
+      }
+      else if (0 == strncmp(cmd, "list", 5))
+      {
+        if (0 !=  m_tracePort)
+        {
+          int level = 0;
+          char buf[4 + DbgTrace_Level::s_cMaxLevelLength];
+          while (DbgTrace_Level::LEVEL_ENUM_LIMIT != level)
+          {
+            // List all valid levels, line by line.
+            if (level == m_tracePort->getLevel())
+            {
+              // mark currently used level
+              snprintf(buf, sizeof(buf),">%s" , DbgTrace_Level::levelToString(static_cast<DbgTrace_Level::Level>(level)));
+            }
+            else
+            {
+              snprintf(buf, sizeof(buf)," %s" , DbgTrace_Level::levelToString(static_cast<DbgTrace_Level::Level>(level)));
+            }
+#ifdef ARDUINO
+            Serial.println(buf);
+#else
+            printf("%s\n", buf);
+#endif
+            level++;
+          }
+        }
+      }
+      else
+      {
+#ifdef ARDUINO
+#ifndef __ets__
+        Serial.print(F("Unknown command: "));
+#else
+        Serial.print("Unknown command: ");
+#endif
+        Serial.println(cmd);
+        Serial.println(this->getHelpText());
+#else
+        printf("Unknown command: %s\n", cmd);
+        printf("%s\n", this->getHelpText());
+#endif
       }
     }
     else
     {
-    #ifdef ARDUINO
-      Serial.print(F("Unknown command: "));
-      Serial.println(cmd);
+#ifdef ARDUINO
+#ifndef __ets__
+      Serial.println(F("Cmd missing"));
+#else
+      Serial.println("Cmd missing");
+#endif
       Serial.println(this->getHelpText());
-    #else
-      printf("Unknown command: %s\n", cmd);
+#else
+      printf("Cmd missing\n");
       printf("%s\n", this->getHelpText());
-    #endif
+#endif
     }
   }
 private:
