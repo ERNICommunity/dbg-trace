@@ -417,7 +417,7 @@ void DbgTrace_Port::printDbl(double val)
 #endif
     getTime(timeStr);
     char stream[s_cTraceBufSize];
-#ifdef ARDUINO
+#ifdef AVR
     snprintf(stream, sizeof(stream), "%s - %s: ", timeStr, getTag());
     dtostrf(val, 6, 3, &stream[12]);
 #else
