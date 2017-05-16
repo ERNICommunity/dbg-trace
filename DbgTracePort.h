@@ -17,6 +17,7 @@ class DbgTrace_Context;
 class DbgTrace_Out;
 class DbgCli_Topic;
 
+#define TR_PRINTF(PORT, LEVEL, args...) do { if ((PORT)->getLevel()>=(LEVEL)) (PORT)->printStrFormat(args); } while (0);
 #define TR_PRINT_STR(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printStr((MSG)); } while (0);
 #define TR_PRINT_LONG(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printLong((MSG)); } while (0);
 #define TR_PRINT_DBL(PORT, LEVEL, MSG)  do { if (((PORT)->getLevel()>=(LEVEL))) (PORT)->printDbl((MSG)); } while (0);
@@ -105,6 +106,13 @@ public:
   DbgTrace_Level::Level getLevel() { return m_level; }
 
   /**
+   * @brief Helper method to print a formatted string. Don't call this function directly, use the defined macros.
+   * @param format Const char format string to be printed out.
+   * @param var_arg Variable list of paramters to be printed according to placeholders in the format string.
+   */
+  void printStrFormat(const char* format, ...);
+
+  /**
    * @brief Helper method to print a string. Don't call this function directly, use the defined macros.
    * @param str Const char message to be printed out.
    */
@@ -148,7 +156,7 @@ public:
   static const unsigned int s_cMaxPortTagLength = 16; /*!< Max. number of characters for a tag name of a trace port. */
   static const unsigned int s_cTestTimeStamp = 10; /*!< Max. number of characters for the printed time-stamp using the test environment. */
   static const unsigned int s_cArduinoTimeStamp = 12; /*!< Max. number of characters for the printed time-stamp using arduino. */
-  static const unsigned int s_cTraceBufSize = s_cMaxPortTagLength + s_cMaxPortTagLength + 40; /*!< Max. number of characters of the hole printed message. */
+  static const unsigned int s_cTraceBufSize = s_cMaxPortTagLength + s_cMaxPortTagLength + 100; /*!< Max. number of characters of the hole printed message. */
 
 private:
 

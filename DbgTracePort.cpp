@@ -5,10 +5,10 @@
  *      Author: niklausd
  */
 
-#include "DbgTraceContext.h"
-#include "DbgTraceOut.h"
-#include "DbgTracePort.h"
-#include "DbgCliCommand.h"
+#include <DbgTraceContext.h>
+#include <DbgTraceOut.h>
+#include <DbgTracePort.h>
+#include <DbgCliCommand.h>
 
 #ifdef ARDUINO
 #include <Arduino.h>
@@ -17,6 +17,7 @@
 #endif
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 //-----------------------------------------------------------------------------
 // concrete command class DbgCli_Command_ChangeOut
@@ -370,6 +371,16 @@ DbgTrace_Port::~DbgTrace_Port()
   {
     context->deleteTracePort(m_tag);
   }
+}
+
+void DbgTrace_Port::printStrFormat(const char* format, ...)
+{
+  char stream[s_cTraceBufSize];
+  va_list args;
+  va_start(args, format);
+  vsnprintf(stream, s_cTraceBufSize, format, args);
+  va_end(args);
+  printStr(stream);
 }
 
 void DbgTrace_Port::printStr(const char* str)
