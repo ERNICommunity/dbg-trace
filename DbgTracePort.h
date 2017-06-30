@@ -156,7 +156,7 @@ public:
   static const unsigned int s_cMaxPortTagLength = 16; /*!< Max. number of characters for a tag name of a trace port. */
   static const unsigned int s_cTestTimeStamp = 10; /*!< Max. number of characters for the printed time-stamp using the test environment. */
   static const unsigned int s_cArduinoTimeStamp = 12; /*!< Max. number of characters for the printed time-stamp using arduino. */
-  static const unsigned int s_cTraceBufSize = s_cMaxPortTagLength + s_cMaxPortTagLength + 100; /*!< Max. number of characters of the hole printed message. */
+  static const unsigned int s_cTraceBufSize = s_cMaxPortTagLength + s_cMaxPortTagLength + 1000; /*!< Max. number of characters of the hole printed message. */
 
 private:
 
