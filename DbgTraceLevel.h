@@ -104,7 +104,7 @@ public:
     }
   }
 
-  static const unsigned int s_cMaxLevelLength = 12; /*!< Max. number of characters for a level name. */
+  static const unsigned int s_cMaxLevelLength = 17; /*!< Max. number of characters for a level name. */
 
 private:
   DbgTrace_Level& operator = (const DbgTrace_Level& src); // assignment operator
